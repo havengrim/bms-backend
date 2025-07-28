@@ -2,7 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Profile
 from django.contrib.auth.password_validation import validate_password
-
+from django.contrib.auth.models import User         
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class RegisterSerializer(serializers.ModelSerializer):
     contact_number = serializers.CharField(write_only=True)
     address = serializers.CharField(write_only=True)
@@ -40,3 +42,46 @@ class RegisterSerializer(serializers.ModelSerializer):
             birthdate=birthdate,
         )
         return user
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['contact_number', 'address', 'civil_status', 'birthdate']
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'profile']
+        
+class CustomTokenObtainPairSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"email": "No user found with this email."})
+
+        # Authenticate using username (required by SimpleJWT)
+        user = authenticate(username=user.username, password=password)
+
+        if not user:
+            raise serializers.ValidationError({"password": "Incorrect password."})
+
+        # Generate JWT token pair
+        refresh = TokenObtainPairSerializer.get_token(user)
+
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+            }
+        }
