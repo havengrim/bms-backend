@@ -10,11 +10,22 @@ class RegisterSerializer(serializers.ModelSerializer):
     address = serializers.CharField(write_only=True)
     civil_status = serializers.ChoiceField(choices=Profile.CIVIL_STATUS_CHOICES, write_only=True)
     birthdate = serializers.DateField(write_only=True)
+    role = serializers.ChoiceField(choices=Profile.ROLE_CHOICES, default='personnel', write_only=True)
     confirm_password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'confirm_password', 'contact_number', 'address', 'civil_status', 'birthdate')
+        fields = (
+            'username',
+            'email',
+            'password',
+            'confirm_password',
+            'contact_number',
+            'address',
+            'civil_status',
+            'birthdate',
+            'role',
+        )
 
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
@@ -27,6 +38,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         address = validated_data.pop('address')
         civil_status = validated_data.pop('civil_status')
         birthdate = validated_data.pop('birthdate')
+        role = validated_data.pop('role')
         validated_data.pop('confirm_password')
 
         user = User.objects.create_user(
@@ -34,18 +46,21 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password']
         )
+
         Profile.objects.create(
             user=user,
             contact_number=contact_number,
             address=address,
             civil_status=civil_status,
             birthdate=birthdate,
+            role=role,
         )
+
         return user
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['contact_number', 'address', 'civil_status', 'birthdate']
+        fields = ['contact_number', 'address', 'civil_status', 'birthdate', 'role']
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
