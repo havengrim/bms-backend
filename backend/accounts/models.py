@@ -20,6 +20,7 @@ class Profile(models.Model):
     address = models.CharField(max_length=255)
     civil_status = models.CharField(max_length=10, choices=CIVIL_STATUS_CHOICES)
     birthdate = models.DateField()
+    image = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='personnel')
 

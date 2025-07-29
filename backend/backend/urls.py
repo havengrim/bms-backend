@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
-from django.conf.urls.static import static  # <-- Add this
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -9,7 +9,8 @@ urlpatterns = [
     path('api/announcements/', include('announcements.urls')),
     path('api/certificates/', include('certificates.urls')),
     path('api/complaints/', include('complaints.urls')),
-    path('api/chatbot/', include('chatbot.urls'))
+    path('api/chatbot/', include('chatbot.urls')),
+    path('api/emergency/', include('emergency.urls')),
 ]
 
 # Serve media files in development

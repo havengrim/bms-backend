@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'announcements',
     'certificates',
     'complaints',
-    'chatbot'
+    'chatbot',
+    'emergency'
 ]
 
 REST_FRAMEWORK = {
