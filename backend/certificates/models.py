@@ -29,3 +29,19 @@ class CertificateRequest(models.Model):
 
     def __str__(self):
         return f"{self.request_number} - {self.first_name} {self.last_name}"
+
+class BusinessPermit(models.Model):
+    business_name = models.CharField(max_length=255)
+    business_type = models.CharField(max_length=100) 
+    owner_name = models.CharField(max_length=255)
+    business_address = models.TextField()
+    contact_number = models.CharField(max_length=20)
+    owner_address = models.TextField()
+    business_description = models.TextField(blank=True)
+    is_renewal = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.business_name

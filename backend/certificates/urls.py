@@ -5,6 +5,8 @@ from .views import (
     CertificateRequestDetailView,
     CertificateRequestUpdateView,
     CertificateRequestDeleteView,
+    BusinessPermitListCreateView,
+    BusinessPermitRetrieveUpdateDestroyView
 )
 
 urlpatterns = [
@@ -13,4 +15,6 @@ urlpatterns = [
     path('view/<int:id>/', CertificateRequestDetailView.as_view(), name='view_certificate'),
     path('edit/<int:id>/', CertificateRequestUpdateView.as_view(), name='update_certificate'),
     path('delete/<int:id>/', CertificateRequestDeleteView.as_view(), name='delete_certificate'),
+     path('business-permits/', BusinessPermitListCreateView.as_view(), name='business-permit-list-create'),
+    path('business-permits/<int:pk>/', BusinessPermitRetrieveUpdateDestroyView.as_view(), name='business-permit-detail'),
 ]
